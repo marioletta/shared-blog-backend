@@ -1,6 +1,5 @@
 package ee.mario.sharedblogbackend.controller;
 
-import ee.mario.sharedblogbackend.dto.PostDTO;
 import ee.mario.sharedblogbackend.entity.Post;
 import ee.mario.sharedblogbackend.repository.PostRepository;
 import org.modelmapper.ModelMapper;
@@ -30,35 +29,17 @@ public class PostController {
         return ResponseEntity.ok().body(postRepository.findAll(pageable));
     }
 
-//    @GetMapping("public-posts")
-//    public ResponseEntity<List<Post>> getPublicPosts() {
-//        List<Post> posts = postRepository.findAll();
-//
-//        System.out.println(modelMapper);
-//        List<Post> postsPublic = List.of(modelMapper.map(posts, Post[].class));
-//
-//        return ResponseEntity.ok().body(postsPublic);
-//    }
-
     @GetMapping("public-posts")
     public ResponseEntity<Page<Post>> getPublicPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
-
         System.out.println(modelMapper);
-
         return ResponseEntity.ok().body(posts);
     }
 
-//    @GetMapping("search-posts/{searchTerm}")
-//    public ResponseEntity<List<Post>> searchPublicPosts(@PathVariable String searchTerm) {
-//        return ResponseEntity.ok().body(postRepository.findByTitleContainsIgnoreCase(searchTerm));
-//    }
-
-
-    @GetMapping("search-posts/{searchTerm}")
-    public ResponseEntity<List<PostDTO>> searchPublicPosts(@PathVariable String searchTerm) {
-        List<PostDTO> dtos = postRepository.searchPostSummaries(searchTerm);
-        return ResponseEntity.ok(dtos);
+    @GetMapping("/search-posts")
+    public ResponseEntity<Page<Post>> searchPublicPosts(@RequestParam String searchTerm, Pageable pageable) {
+        Page<Post> posts = postRepository.searchPosts(searchTerm, pageable);
+        return ResponseEntity.ok(posts);
     }
 
     @PostMapping("posts")

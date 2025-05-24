@@ -8,4 +8,6 @@ import lombok.Data;
 public class PostDTO {
     private Long id;
     private String title;
+    private String subTitle;
+    private String content;
 }

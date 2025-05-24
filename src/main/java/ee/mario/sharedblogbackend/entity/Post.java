@@ -23,7 +23,7 @@ public class Post {
     private String title;
     private String subTitle;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     private Date timestamp;
     private String image;

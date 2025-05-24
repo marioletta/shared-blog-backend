@@ -9,4 +9,5 @@ public class PersonDTO {
     private String name;
     private String email;
     private Long profilePicture;
+    private String motto;
 }

@@ -23,4 +23,5 @@ public class Person {
     private String password;
     private AccountType accountType;
     private Long profilePicture;
+    private String motto;
 }
