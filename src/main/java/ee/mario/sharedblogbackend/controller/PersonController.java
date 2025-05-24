@@ -79,6 +79,23 @@ public class PersonController {
         return ResponseEntity.ok().body(personDTOs);
     }
 
+    @GetMapping("user/{id}")
+    public ResponseEntity<Person> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok().body(personRepository.findById(id).orElseThrow());
+    }
+
+    @PutMapping("user")
+    public ResponseEntity<Person> editUser(@RequestBody Person person) {
+        if (person.getId() == null) {
+            throw new RuntimeException("Cannot add without ID!");
+        }
+        if (person.getPassword() == null || person.getPassword().isEmpty()) {
+            throw new RuntimeException("password_missing");
+        }
+        personRepository.save(person);
+        return ResponseEntity.ok().body(personRepository.findById(person.getId()).orElseThrow());
+    }
+
 
 
 }

@@ -1,5 +1,6 @@
 package ee.mario.sharedblogbackend.controller;
 
+import ee.mario.sharedblogbackend.dto.PostDTO;
 import ee.mario.sharedblogbackend.entity.Post;
 import ee.mario.sharedblogbackend.repository.PostRepository;
 import org.modelmapper.ModelMapper;
@@ -9,7 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,14 +30,35 @@ public class PostController {
         return ResponseEntity.ok().body(postRepository.findAll(pageable));
     }
 
+//    @GetMapping("public-posts")
+//    public ResponseEntity<List<Post>> getPublicPosts() {
+//        List<Post> posts = postRepository.findAll();
+//
+//        System.out.println(modelMapper);
+//        List<Post> postsPublic = List.of(modelMapper.map(posts, Post[].class));
+//
+//        return ResponseEntity.ok().body(postsPublic);
+//    }
+
     @GetMapping("public-posts")
-    public ResponseEntity<List<Post>> getPublicPosts() {
-        List<Post> posts = postRepository.findAll();
+    public ResponseEntity<Page<Post>> getPublicPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
 
         System.out.println(modelMapper);
-        List<Post> postsPublic = List.of(modelMapper.map(posts, Post[].class));
 
-        return ResponseEntity.ok().body(postsPublic);
+        return ResponseEntity.ok().body(posts);
+    }
+
+//    @GetMapping("search-posts/{searchTerm}")
+//    public ResponseEntity<List<Post>> searchPublicPosts(@PathVariable String searchTerm) {
+//        return ResponseEntity.ok().body(postRepository.findByTitleContainsIgnoreCase(searchTerm));
+//    }
+
+
+    @GetMapping("search-posts/{searchTerm}")
+    public ResponseEntity<List<PostDTO>> searchPublicPosts(@PathVariable String searchTerm) {
+        List<PostDTO> dtos = postRepository.searchPostSummaries(searchTerm);
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping("posts")
@@ -43,6 +67,7 @@ public class PostController {
         if (post.getId() != null) {
             throw new RuntimeException("Cannot add with ID!");
         }
+        post.setTimestamp(new Date());
         return postRepository.save(post);
     }
 
@@ -58,14 +83,16 @@ public class PostController {
     }
 
     @PutMapping("posts")
-    public ResponseEntity<List<Post>> editPost(@RequestBody Post post) {
+    public ResponseEntity<Post> editPost(@RequestBody Post post) {
         //TODO: KUI ON PUUDU ID, siis viskab errori
         if (post.getId() == null) {
             throw new RuntimeException("Cannot add without ID!");
         }
         postRepository.save(post);
-        return ResponseEntity.ok().body(postRepository.findAll());
+        return ResponseEntity.ok().body(postRepository.findById(post.getId()).orElseThrow());
     }
+
+
 
 
 
