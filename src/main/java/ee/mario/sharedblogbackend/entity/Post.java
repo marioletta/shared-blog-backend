@@ -27,6 +27,7 @@ public class Post {
     private String content;
     private Date timestamp;
     private String image;
+    private boolean published;
 
     @ManyToMany
     private List<Category> category;

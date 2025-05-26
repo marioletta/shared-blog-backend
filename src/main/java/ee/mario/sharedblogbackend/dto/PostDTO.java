@@ -10,4 +10,5 @@ public class PostDTO {
     private String title;
     private String subTitle;
     private String content;
+    private boolean published;
 }

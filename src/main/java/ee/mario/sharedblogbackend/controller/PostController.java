@@ -31,15 +31,22 @@ public class PostController {
 
     @GetMapping("public-posts")
     public ResponseEntity<Page<Post>> getPublicPosts(Pageable pageable) {
-        Page<Post> posts = postRepository.findAll(pageable);
+        Page<Post> posts = postRepository.findByPublishedTrue(pageable);
         System.out.println(modelMapper);
         return ResponseEntity.ok().body(posts);
     }
 
-    @GetMapping("/search-posts")
+    @GetMapping("search-posts")
     public ResponseEntity<Page<Post>> searchPublicPosts(@RequestParam String searchTerm, Pageable pageable) {
-        Page<Post> posts = postRepository.searchPosts(searchTerm, pageable);
+        Page<Post> posts = postRepository.searchPublishedPosts(searchTerm, pageable);
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("pending-posts")
+    public ResponseEntity<Page<Post>> getPrivatePosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findByPublishedFalse(pageable);
+        System.out.println(modelMapper);
+        return ResponseEntity.ok().body(posts);
     }
 
     @PostMapping("posts")

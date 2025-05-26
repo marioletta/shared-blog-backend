@@ -45,7 +45,7 @@ public class PersonController {
         if(person.getPassword().length() < 7) {
             throw new RuntimeException("password_too_short");
         }
-        person.setAccountType(AccountType.REGULAR);
+        person.setAccountType(AccountType.WRITER);
         return personRepository.save(person);
 //        return authToken;
     }
